@@ -10,3 +10,11 @@ The game was built on top of pygame and meant to be run on Python 3. In order to
 $ pip install -r requirements.txt
 $ python main.py
 ```
+
+## Resolution
+
+Currently the game supports two resolution modes:
+- 1024x768 (default)
+- 800x600
+
+You can switch between them in the config.json file.
