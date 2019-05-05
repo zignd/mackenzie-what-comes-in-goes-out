@@ -34,7 +34,7 @@ def main():
     }
 
     # current scene being rendered
-    current_scene = start_scene
+    current_scene = router[config.get(config.STARTING_SCENE) or START_SCENE]
 
     while 1:
         events = pygame.event.get()

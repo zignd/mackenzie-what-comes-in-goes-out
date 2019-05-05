@@ -77,10 +77,10 @@ class GameScene:
             images.PLATE_EMOJI), (144, 595))
 
         self.hygiene_gauge = Gauge(self.win, Gauge.TYPE_HIGH_IS_GOOD, load_image(
-            images.SHOWER_EMOJI), (430, 595))
+            images.SHOWER_EMOJI), (439, 595))
 
         self.toilet_gauge = Gauge(self.win, Gauge.TYPE_LOW_IS_GOOD, load_image(
-            images.TOILET_EMOJI), (722, 595))
+            images.TOILET_EMOJI), (748, 595))
 
         self.components = [self.satiety_gauge,
                            self.hygiene_gauge, self.toilet_gauge]
@@ -99,7 +99,12 @@ class GameScene:
                     self.toilet_gauge.decrease()
 
         background = load_image(images.BRICK_WALL_BACKGROUND)
+        marble = load_image(images.MARBLE)
+        game_canvas = load_image(images.GAME_CANVAS)
+
         self.win.blit(background, (0, 0))
+        self.win.blit(marble, (100, 27))
+        self.win.blit(game_canvas, (131, 54))
 
         for component in self.components:
             component.draw()

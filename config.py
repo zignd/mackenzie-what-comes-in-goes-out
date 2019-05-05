@@ -3,6 +3,7 @@ import string
 
 RESOLUTION_WIDTH = "resolution-width"
 RESOLUTION_HEIGHT = "resolution-height"
+STARTING_SCENE = "starting-scene"
 
 cfg = None
 
@@ -19,12 +20,11 @@ def load_config():
 
 
 def get(key):
-    return cfg[key]
-
+    return cfg.get(key)
 
 def get_resolution():
-    width = cfg[RESOLUTION_WIDTH]
-    height = cfg[RESOLUTION_HEIGHT]
+    width = get(RESOLUTION_WIDTH) or 1024
+    height = get(RESOLUTION_HEIGHT) or 768
     return (width, height)
 
 def get_scale():
