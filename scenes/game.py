@@ -85,6 +85,44 @@ class GameScene:
         self.components = [self.satiety_gauge,
                            self.hygiene_gauge, self.toilet_gauge]
 
+        self.background = load_image(images.BRICK_WALL_BACKGROUND)
+        self.marble = load_image(images.MARBLE)
+        self.game_canvas = load_image(images.GAME_CANVAS)
+
+        self.map_tiles = {
+            'fl': load_image(images.TILE_FLOOR),
+            'c11': load_image(images.TILE_CHAR11),
+        }
+
+        # 16x11
+        self.map_format = [
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 1
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 2
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 3
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 4
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 5
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 6
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl','c11'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 7
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 8
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 9
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 10
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 11
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 12
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 13
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 14
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 15
+            [['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl'], ['fl']], # 16
+        ]
+
+        self.map = pygame.Surface(self.game_canvas.get_size())
+    
+    def draw_map(self):
+        self.map.blit(self.game_canvas, (0, 0))
+        for i, line in enumerate(self.map_format):
+            for j, cell in enumerate(line):
+                for key in cell:
+                    self.map.blit(self.map_tiles[key], (i * 48, j * 48))
+
     def render(self, **args):
         for event in args['events']:
             if event.type == pygame.KEYDOWN:
@@ -98,15 +136,13 @@ class GameScene:
                 elif event.key == pygame.K_LEFT:
                     self.toilet_gauge.decrease()
 
-        background = load_image(images.BRICK_WALL_BACKGROUND)
-        marble = load_image(images.MARBLE)
-        game_canvas = load_image(images.GAME_CANVAS)
-
-        self.win.blit(background, (0, 0))
-        self.win.blit(marble, (100, 27))
-        self.win.blit(game_canvas, (131, 54))
+        self.win.blit(self.background, (0, 0))
+        self.win.blit(self.marble, (110, 24))
+        self.win.blit(self.map, (129, 40))
 
         for component in self.components:
             component.draw()
+
+        self.draw_map()
 
         return {'goto': GAME_SCENE}

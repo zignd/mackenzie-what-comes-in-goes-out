@@ -30,3 +30,6 @@ GAUGE_EMPTY = _path('gauge_empty.png')
 GAUGE_VESSEL = _path('gauge_vessel.png')
 GAME_CANVAS = _path('game_canvas.png')
 MARBLE = _path('marble.png')
+
+TILE_FLOOR = _path('tile_floor.png')
+TILE_CHAR11 = _path('tile_char11.png')

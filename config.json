@@ -1,4 +1,5 @@
 {
     "resolution-width": 1024,
-    "resolution-height": 768
+    "resolution-height": 768,
+    "starting-scene": "game_scene"
 }
