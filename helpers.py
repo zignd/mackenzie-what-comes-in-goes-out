@@ -6,7 +6,7 @@ import config
 def scale_pair(pair):
     val = config.get_scale()
     width, height = pair
-    return (int(width * val), int(height * val))
+    return (round(width * val), round(height * val))
 
 
 def scale_surface(surface):
