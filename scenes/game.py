@@ -5,71 +5,6 @@ from scenes.names import GAME_SCENE
 from .gamemap import MAP
 
 
-class Gauge:
-    def __init__(self, win, type, icon, pos):
-        self.type = type
-        self.win = win
-        self.pos = pos
-
-        if type == Gauge.TYPE_HIGH_IS_GOOD:
-            self.current_value = Gauge.MAX_VALUE
-            self.fillings = [
-                load_image(images.GAUGE_TYPE1_FILL1),
-                load_image(images.GAUGE_TYPE1_FILL2),
-                load_image(images.GAUGE_TYPE1_FILL3),
-                load_image(images.GAUGE_TYPE1_FILL4),
-                load_image(images.GAUGE_TYPE1_FILL5),
-            ]
-        elif type == Gauge.TYPE_LOW_IS_GOOD:
-            self.current_value = Gauge.MIN_VALUE
-            self.fillings = [
-                load_image(images.GAUGE_TYPE2_FILL1),
-                load_image(images.GAUGE_TYPE2_FILL2),
-                load_image(images.GAUGE_TYPE2_FILL3),
-                load_image(images.GAUGE_TYPE2_FILL4),
-                load_image(images.GAUGE_TYPE2_FILL5),
-            ]
-        else:
-            raise Exception("Invalid gauge type")
-
-        self.background = load_image(images.GAUGE_BACKROUND)
-        self.icon = icon
-        self.vessel = load_image(images.GAUGE_VESSEL)
-        self.empty = load_image(images.GAUGE_EMPTY)
-
-        self.base = pygame.Surface(self.background.get_size())
-        color_key = pygame.Color(255, 0, 255, 255)
-        self.base.fill(color_key)
-        self.base.set_colorkey(color_key)
-
-    def draw(self):
-        self.base.blit(self.background, scale_pair((0, 0)))
-        self.base.blit(self.icon, scale_pair((7, 52)))
-        self.base.blit(self.vessel, scale_pair((68, 17)))
-        self.base.blit(self.get_filling(), scale_pair((76, 26)))
-        self.win.blit(self.base, self.pos)
-
-    def get_filling(self):
-        if self.current_value == 0:
-            return self.empty
-        else:
-            return self.fillings[int(self.current_value - 1)]
-
-    def increase(self):
-        if self.current_value < Gauge.MAX_VALUE:
-            self.current_value += 0.5
-
-    def decrease(self):
-        if self.current_value > Gauge.MIN_VALUE:
-            self.current_value -= 0.5
-
-
-Gauge.MAX_VALUE = 5
-Gauge.MIN_VALUE = 0
-Gauge.TYPE_HIGH_IS_GOOD = 1
-Gauge.TYPE_LOW_IS_GOOD = 2
-
-
 def resolve_next_code(c, c1, c2, c3):
     if c in (c1, c2, c3):
         if c == c1:
@@ -139,6 +74,9 @@ class GameScene:
 
         self.map = pygame.Surface(self.game_canvas.get_size())
 
+        self.is_player_moving = False
+        self.last_player_moving_direction = None
+
     def draw_map(self):
         self.map.blit(self.game_canvas, scale_pair((0, 0)))
         for i, line in enumerate(self.map_cells):
@@ -149,45 +87,63 @@ class GameScene:
                     self.map.blit(self.map_tiles[layer['tile']], pos)
 
     def move_player(self, direction):
+        # in order to keep the player moving we need to keep track of
+        # the last direction he chose. so that in the next call to render
+        # even if there are no keydown events, we can still decide
+        # on a direction for the user
+        if direction == None:
+            direction = self.last_player_moving_direction
+        else:
+            self.last_player_moving_direction = direction
+        self.is_player_moving = True
+
         row, column = self.current_player_pos
+        next_row, next_column = row, column
+        
         code = self.map_cells[row][column].pop()
+        next_code = code
+        
+        # calculates the next position and next tile, based
+        # on the current position and the current tile
         if direction == 'up':
             if row > 0:
-                row -= 1
-            code = resolve_next_code(code, 41, 42, 43)
+                next_row -= 1
+            next_code = resolve_next_code(code, 41, 42, 43)
         elif direction == 'right':
             if column < len(self.map_cells[0]) - 1:
-                column += 1
-            code = resolve_next_code(code, 31, 32, 33)
+                next_column += 1
+            next_code = resolve_next_code(code, 31, 32, 33)
         elif direction == 'left':
             if column > 0:
-                column -= 1
-            code = resolve_next_code(code, 21, 22, 23)
+                next_column -= 1
+            next_code = resolve_next_code(code, 21, 22, 23)
         elif direction == 'down':
             if row < len(self.map_cells) - 1:
-                row += 1
-            code = resolve_next_code(code, 11, 12, 13)
-        self.current_player_pos = (row, column)
-        self.map_cells[row][column].append(code)
+                next_row += 1
+            next_code = resolve_next_code(code, 11, 12, 13)
+        
+        # checks if the player will collide with a blocking tile by going to next position
+        next_pos = (next_row, next_column)
+        if self.can_player_move(next_pos):
+            # moves the player to the next position, and updates the tile
+            self.current_player_pos = next_pos
+            self.map_cells[next_row][next_column].append(next_code)
+        else:
+            # keeps the player at the same position, updates only the tile
+            self.map_cells[row][column].append(next_code)
 
-    # def can_player_move(self, direction):
-    #     row, column = self.current_player_pos
-    #     if row == 0 or row == (len(self.map_cells) - 1)
-    #     or column == 0 or column == (len(self.map_cells[0]) - 1):
-    #         return False
-    #     if direction == 'up':
-    #         row -= 1
-    #     elif direction == 'right':
-    #         column += 1
-    #     elif direction == 'down':
-    #         row += 1
-    #     elif direction == 'left':
-    #         column -= 1
-    #     cell = self.map_cells[row][column]
-    #     for code in cell:
-    #         # TODO: return False if any of the codes points to a layer whose type is 'block'
-    #         pass
-    #     return True
+    def stop_player(self):
+        self.is_player_moving = False
+        self.last_player_moving_direction = None
+
+    def can_player_move(self, next_pos):
+        next_row, next_column = next_pos
+        next_cell = self.map_cells[next_row][next_column]
+        for code in next_cell:
+            if self.map_layers[code]['type'] == 'block':
+                return False
+        return True
+
 
     def render(self, **args):
         for event in args['events']:
@@ -204,6 +160,9 @@ class GameScene:
                 elif event.key == pygame.K_LEFT:
                     self.move_player('left')
                     self.toilet_gauge.decrease()
+            elif event.type == pygame.KEYUP:
+                if event.key in (pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT):
+                    self.stop_player()
 
         self.win.blit(self.background, scale_pair((0, 0)))
         self.win.blit(self.marble, scale_pair((110, 24)))
@@ -215,3 +174,67 @@ class GameScene:
         self.draw_map()
 
         return {'goto': GAME_SCENE}
+
+class Gauge:
+    def __init__(self, win, type, icon, pos):
+        self.type = type
+        self.win = win
+        self.pos = pos
+
+        if type == Gauge.TYPE_HIGH_IS_GOOD:
+            self.current_value = Gauge.MAX_VALUE
+            self.fillings = [
+                load_image(images.GAUGE_TYPE1_FILL1),
+                load_image(images.GAUGE_TYPE1_FILL2),
+                load_image(images.GAUGE_TYPE1_FILL3),
+                load_image(images.GAUGE_TYPE1_FILL4),
+                load_image(images.GAUGE_TYPE1_FILL5),
+            ]
+        elif type == Gauge.TYPE_LOW_IS_GOOD:
+            self.current_value = Gauge.MIN_VALUE
+            self.fillings = [
+                load_image(images.GAUGE_TYPE2_FILL1),
+                load_image(images.GAUGE_TYPE2_FILL2),
+                load_image(images.GAUGE_TYPE2_FILL3),
+                load_image(images.GAUGE_TYPE2_FILL4),
+                load_image(images.GAUGE_TYPE2_FILL5),
+            ]
+        else:
+            raise Exception("Invalid gauge type")
+
+        self.background = load_image(images.GAUGE_BACKROUND)
+        self.icon = icon
+        self.vessel = load_image(images.GAUGE_VESSEL)
+        self.empty = load_image(images.GAUGE_EMPTY)
+
+        self.base = pygame.Surface(self.background.get_size())
+        color_key = pygame.Color(255, 0, 255, 255)
+        self.base.fill(color_key)
+        self.base.set_colorkey(color_key)
+
+    def draw(self):
+        self.base.blit(self.background, scale_pair((0, 0)))
+        self.base.blit(self.icon, scale_pair((7, 52)))
+        self.base.blit(self.vessel, scale_pair((68, 17)))
+        self.base.blit(self.get_filling(), scale_pair((76, 26)))
+        self.win.blit(self.base, self.pos)
+
+    def get_filling(self):
+        if self.current_value == 0:
+            return self.empty
+        else:
+            return self.fillings[int(self.current_value - 1)]
+
+    def increase(self):
+        if self.current_value < Gauge.MAX_VALUE:
+            self.current_value += 0.5
+
+    def decrease(self):
+        if self.current_value > Gauge.MIN_VALUE:
+            self.current_value -= 0.5
+
+
+Gauge.MAX_VALUE = 5
+Gauge.MIN_VALUE = 0
+Gauge.TYPE_HIGH_IS_GOOD = 1
+Gauge.TYPE_LOW_IS_GOOD = 2
