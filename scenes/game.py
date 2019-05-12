@@ -38,7 +38,7 @@ class GameScene:
 
         self.time_event_id = pygame.USEREVENT+1
         self.walk_event_id = pygame.USEREVENT+2
-        time.set_timer(self.time_event_id, 2000)
+        time.set_timer(self.time_event_id, 3000)
         self.clock = time.Clock()
 
     def draw_map(self):
@@ -133,7 +133,17 @@ class GameScene:
         # TODO: play sound
 
     def handle_shower(self):
-        pass
+        line, column = self.current_player_pos
+        cell = self.map_matrix[line][column]
+        found_shower = False
+        for code in cell:
+            if self.map_layers[code]['type'] == 'bathtub':
+                found_shower = True
+                break
+        if not found_shower:
+            return
+        self.hygiene_gauge.increase(Gauge.MAX_VALUE)
+        # TODO: play sound
 
     def handle_sink(self):
         pass
