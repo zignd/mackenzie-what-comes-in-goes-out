@@ -2,19 +2,7 @@ import pygame
 import assets.images as images
 from helpers import scale_pair, load_image
 from scenes.names import GAME_SCENE
-from .gamemap import MAP
-
-
-def resolve_next_code(c, c1, c2, c3):
-    if c in (c1, c2, c3):
-        if c == c1:
-            return c2
-        elif c == c2:
-            return c3
-        else:
-            return c1
-    else:
-        return c1
+from .gamemap import MAP, LAYERS, get_tiles
 
 
 class GameScene:
@@ -37,150 +25,8 @@ class GameScene:
         self.marble = load_image(images.MARBLE)
         self.game_canvas = load_image(images.GAME_CANVAS)
 
-        self.map_tiles = {
-            'floor': load_image(images.TILE_FLOOR),
-            'wall': load_image(images.TILE_WALL),
-            'char11': load_image(images.TILE_CHAR11),
-            'char12': load_image(images.TILE_CHAR12),
-            'char13': load_image(images.TILE_CHAR13),
-            'char21': load_image(images.TILE_CHAR21),
-            'char22': load_image(images.TILE_CHAR22),
-            'char23': load_image(images.TILE_CHAR23),
-            'char31': load_image(images.TILE_CHAR31),
-            'char32': load_image(images.TILE_CHAR32),
-            'char33': load_image(images.TILE_CHAR33),
-            'char41': load_image(images.TILE_CHAR41),
-            'char42': load_image(images.TILE_CHAR42),
-            'char43': load_image(images.TILE_CHAR43),
-            'bedsidetable': load_image(images.TILE_BEDSIDETABLE),
-            'bed_part1': load_image(images.TILE_BED_PART1),
-            'bed_part2': load_image(images.TILE_BED_PART2),
-            'toilet_part1': load_image(images.TILE_TOILET_PART1),
-            'toilet_part2': load_image(images.TILE_TOILET_PART2),
-            'bathtub_part1': load_image(images.TILE_BATHTUB_PART1),
-            'bathtub_part2': load_image(images.TILE_BATHTUB_PART2),
-            'wardrobe_part1': load_image(images.TILE_WARDROBE_PART1),
-            'wardrobe_part2': load_image(images.TILE_WARDROBE_PART2),
-            'window': load_image(images.TILE_WINDOW),
-            'small_table_flower': load_image(images.TILE_SMALL_TABLE_FLOWER),
-            'bathroom_mirror': load_image(images.TILE_BATHROOM_MIRROR),
-            'bathroom_sink': load_image(images.TILE_BATHROOM_SINK),
-            'table_metal_vert': load_image(images.TILE_TABLE_METAL_VERT),
-            'office_chair_left': load_image(images.TILE_OFFICE_CHAIR_LEFT),
-            'couch_part1': load_image(images.TILE_COUCH_PART1),
-            'couch_part2': load_image(images.TILE_COUCH_PART2),
-            'table_black_part1': load_image(images.TILE_TABLE_BLACK_PART1),
-            'table_black_part2': load_image(images.TILE_TABLE_BLACK_PART2),
-            'television': load_image(images.TILE_TELEVISION),
-            'couch_vert_part1': load_image(images.TILE_COUCH_VERT_PART1),
-            'couch_vert_part2': load_image(images.TILE_COUCH_VERT_PART2),
-            'padded_round_stool': load_image(images.TILE_PADDED_ROUND_STOOL),
-            'shelf_books_part1': load_image(images.TILE_SHELF_BOOKS_PART1),
-            'shelf_books_part2': load_image(images.TILE_SHELF_BOOKS_PART2),
-            'shelf_books_part3': load_image(images.TILE_SHELF_BOOKS_PART3),
-            'shelf_books_part4': load_image(images.TILE_SHELF_BOOKS_PART4),
-            'telephone': load_image(images.TILE_TELEPHONE),
-            'table': load_image(images.TILE_TABLE),
-            'sculpture_bust': load_image(images.TILE_SCULPTURE_BUST),
-            'painting_support': load_image(images.TILE_PAINTING_SUPPORT),
-            'round_wood_stool': load_image(images.TILE_ROUND_WOOD_STOOL),
-            'lampshade': load_image(images.TILE_LAMPSHADE),
-            'shelf_books_small_part1': load_image(images.TILE_SHELF_BOOKS_SMALL_PART1),
-            'shelf_books_small_part2': load_image(images.TILE_SHELF_BOOKS_SMALL_PART2),
-            'plant_part1': load_image(images.TILE_PLANT_PART1),
-            'plant_part2': load_image(images.TILE_PLANT_PART2),
-            'plant2_part1': load_image(images.TILE_PLANT2_PART1),
-            'plant2_part2': load_image(images.TILE_PLANT2_PART2),
-            'plant3': load_image(images.TILE_PLANT3),
-            'balcony': load_image(images.TILE_BALCONY),
-            'balcony_food_over': load_image(images.TILE_BALCONY_FOOD_OVER),
-            'balcony_stove': load_image(images.TILE_BALCONY_STOVE),
-            'fridge_part1': load_image(images.TILE_FRIDGE_PART1),
-            'fridge_part2': load_image(images.TILE_FRIDGE_PART2),
-            'chair_left': load_image(images.TILE_CHAIR_LEFT),
-            'chair_right': load_image(images.TILE_CHAIR_RIGHT),
-            'chair_up': load_image(images.TILE_CHAIR_UP),
-            'chair_down': load_image(images.TILE_CHAIR_DOWN),
-            'table_part1': load_image(images.TILE_TABLE_PART1),
-            'table_part2': load_image(images.TILE_TABLE_PART2),
-            'table_part3': load_image(images.TILE_TABLE_PART3),
-            'shelf_bread_part1': load_image(images.TILE_SHELF_BREAD_PART1),
-            'shelf_bread_part2': load_image(images.TILE_SHELF_BREAD_PART2),
-            'shelf_items_part1': load_image(images.TILE_SHELF_ITEMS_PART1),
-            'shelf_items_part2': load_image(images.TILE_SHELF_ITEMS_PART2),
-        }
-        self.map_layers = {
-            1: {'type': 'normal', 'tile': 'floor'},
-            2: {'type': 'block', 'tile': 'wall'},
-            3: {'type': 'block', 'tile': 'bedsidetable'},
-            4: {'type': 'normal', 'tile': 'bed_part1'},
-            5: {'type': 'normal', 'tile': 'bed_part2'},
-            6: {'type': 'block', 'tile': 'toilet_part1'},
-            7: {'type': 'toilet', 'tile': 'toilet_part2'},
-            8: {'type': 'bathtub', 'tile': 'bathtub_part1'},
-            9: {'type': 'bathtub', 'tile': 'bathtub_part2'},
-            10: {'type': 'block', 'tile': 'window'},
-            11: {'type': 'char', 'tile': 'char11'},
-            12: {'type': 'char', 'tile': 'char12'},
-            13: {'type': 'char', 'tile': 'char13'},
-            14: {'type': 'block', 'tile': 'wardrobe_part1'},
-            15: {'type': 'block', 'tile': 'wardrobe_part2'},
-            16: {'type': 'block', 'tile': 'small_table_flower'},
-            17: {'type': 'block', 'tile': 'bathroom_mirror'},
-            18: {'type': 'block', 'tile': 'bathroom_sink'},
-            19: {'type': 'block', 'tile': 'table_metal_vert'},
-            20: {'type': 'normal', 'tile': 'office_chair_left'},
-            21: {'type': 'char', 'tile': 'char21'},
-            22: {'type': 'char', 'tile': 'char22'},
-            23: {'type': 'char', 'tile': 'char23'},
-            24: {'type': 'block', 'tile': 'couch_part1'},
-            25: {'type': 'block', 'tile': 'couch_part2'},
-            26: {'type': 'block', 'tile': 'table_black_part1'},
-            27: {'type': 'block', 'tile': 'table_black_part2'},
-            28: {'type': 'block', 'tile': 'television'},
-            29: {'type': 'block', 'tile': 'couch_vert_part1'},
-            30: {'type': 'block', 'tile': 'couch_vert_part2'},
-            31: {'type': 'char', 'tile': 'char31'},
-            32: {'type': 'char', 'tile': 'char32'},
-            33: {'type': 'char', 'tile': 'char33'},
-            34: {'type': 'block', 'tile': 'padded_round_stool'},
-            35: {'type': 'block', 'tile': 'shelf_books_part1'},
-            36: {'type': 'block', 'tile': 'shelf_books_part2'},
-            37: {'type': 'block', 'tile': 'shelf_books_part3'},
-            38: {'type': 'block', 'tile': 'shelf_books_part4'},
-            39: {'type': 'block', 'tile': 'telephone'},
-            40: {'type': 'block', 'tile': 'table'},
-            41: {'type': 'char', 'tile': 'char41'},
-            42: {'type': 'char', 'tile': 'char42'},
-            43: {'type': 'char', 'tile': 'char43'},
-            44: {'type': 'block', 'tile': 'sculpture_bust'},
-            45: {'type': 'block', 'tile': 'painting_support'},
-            46: {'type': 'normal', 'tile': 'round_wood_stool'},
-            47: {'type': 'block', 'tile': 'lampshade'},
-            48: {'type': 'block', 'tile': 'shelf_books_small_part1'},
-            49: {'type': 'block', 'tile': 'shelf_books_small_part2'},
-            50: {'type': 'block', 'tile': 'plant_part1'},
-            51: {'type': 'block', 'tile': 'plant_part2'},
-            52: {'type': 'block', 'tile': 'plant2_part1'},
-            53: {'type': 'block', 'tile': 'plant2_part2'},
-            54: {'type': 'block', 'tile': 'plant3'},
-            55: {'type': 'block', 'tile': 'balcony'},
-            56: {'type': 'block', 'tile': 'balcony_food_over'},
-            57: {'type': 'block', 'tile': 'balcony_stove'},
-            58: {'type': 'block', 'tile': 'fridge_part1'},
-            59: {'type': 'block', 'tile': 'fridge_part2'},
-            60: {'type': 'normal', 'tile': 'chair_left'},
-            61: {'type': 'normal', 'tile': 'chair_right'},
-            62: {'type': 'normal', 'tile': 'chair_up'},
-            63: {'type': 'normal', 'tile': 'chair_down'},
-            64: {'type': 'block', 'tile': 'table_part1'},
-            65: {'type': 'block', 'tile': 'table_part2'},
-            66: {'type': 'block', 'tile': 'table_part3'},
-            67: {'type': 'block', 'tile': 'shelf_bread_part1'},
-            68: {'type': 'block', 'tile': 'shelf_bread_part2'},
-            69: {'type': 'block', 'tile': 'shelf_items_part1'},
-            70: {'type': 'block', 'tile': 'shelf_items_part2'},
-        }
+        self.map_tiles = get_tiles()
+        self.map_layers = LAYERS
         self.map_cells = MAP
         self.current_player_pos = (6, 7)
 
@@ -211,10 +57,10 @@ class GameScene:
 
         row, column = self.current_player_pos
         next_row, next_column = row, column
-        
+
         code = self.map_cells[row][column].pop()
         next_code = code
-        
+
         # calculates the next position and next tile, based
         # on the current position and the current tile
         if direction == 'up':
@@ -233,7 +79,7 @@ class GameScene:
             if row < len(self.map_cells) - 1:
                 next_row += 1
             next_code = resolve_next_code(code, 11, 12, 13)
-        
+
         # checks if the player will collide with a blocking tile by going to next position
         next_pos = (next_row, next_column)
         if self.can_player_move(next_pos):
@@ -255,7 +101,6 @@ class GameScene:
             if self.map_layers[code]['type'] == 'block':
                 return False
         return True
-
 
     def render(self, **args):
         for event in args['events']:
@@ -286,6 +131,7 @@ class GameScene:
         self.draw_map()
 
         return {'goto': GAME_SCENE}
+
 
 class Gauge:
     def __init__(self, win, type, icon, pos):
@@ -350,3 +196,15 @@ Gauge.MAX_VALUE = 5
 Gauge.MIN_VALUE = 0
 Gauge.TYPE_HIGH_IS_GOOD = 1
 Gauge.TYPE_LOW_IS_GOOD = 2
+
+
+def resolve_next_code(c, c1, c2, c3):
+    if c in (c1, c2, c3):
+        if c == c1:
+            return c2
+        elif c == c2:
+            return c3
+        else:
+            return c1
+    else:
+        return c1
