@@ -34,7 +34,7 @@ LAYERS = {
     15: {'type': 'block', 'tile': 'wardrobe_part2'},
     16: {'type': 'block', 'tile': 'small_table_flower'},
     17: {'type': 'block', 'tile': 'bathroom_mirror'},
-    18: {'type': 'block', 'tile': 'bathroom_sink'},
+    18: {'type': 'sink', 'tile': 'bathroom_sink'},
     19: {'type': 'block', 'tile': 'table_metal_vert'},
     20: {'type': 'normal', 'tile': 'office_chair_left'},
     21: {'type': 'char', 'tile': 'char21'},

@@ -1,3 +1,4 @@
+import random
 import pygame
 from pygame import time
 import assets.images as images
@@ -40,6 +41,9 @@ class GameScene:
         self.walk_event_id = pygame.USEREVENT+2
         time.set_timer(self.time_event_id, 3000)
         self.clock = time.Clock()
+
+        self.spawned_food = []
+        self.spawn_food()
 
     def draw_map(self):
         self.map_surface.blit(self.game_canvas, scale_pair((0, 0)))
@@ -127,9 +131,11 @@ class GameScene:
                 break
         if food_code is None:
             return
+        self.spawned_food.remove(self.current_player_pos)
         cell.remove(code)
         self.satiety_gauge.increase(2)
         self.toilet_gauge.increase(1)
+        self.spawn_food(1)
         # TODO: play sound
 
     def handle_shower(self):
@@ -177,6 +183,28 @@ class GameScene:
         self.handle_toilet()
         self.handle_shower()
         self.handle_sink()
+
+    def spawn_food(self, k = None):
+        possible = []
+        for i, line in enumerate(self.map_matrix):
+            for j, cell in enumerate(line):
+                ok = True
+                for code in cell:
+                    if self.map_layers[code]['type'] != 'normal':
+                        ok = False
+                if ok:
+                    possible.append((i, j))
+        len_possible = len(possible)
+        if k is None:
+            k = len_possible // 13
+        indexes = random.sample(range(len_possible), k)
+        for i in indexes:
+            self.spawned_food.append(possible[i])
+            line, column = possible[i]
+            self.map_matrix[line][column].append(self.get_random_food())
+        
+    def get_random_food(self):
+        return random.choice([71, 72, 73, 74, 75, 76, 77])
 
     def render(self, **args):
         for event in args['events']:
