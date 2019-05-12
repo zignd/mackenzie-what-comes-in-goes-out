@@ -1,0 +1,5 @@
+- incrementar e decrementar os gauges com base no cronômetro
+-- incrementar o gauge satiety com base no consumo de comida
+-- decrementar os gauges (toilet e hygiene) com base na utilização do vaso sanitário
+-- incrementar o gauge hygiene com base na utilização da torneira e do chuveiro
+- incrementar o score com base no consumo de comida 
