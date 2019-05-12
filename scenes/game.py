@@ -28,10 +28,10 @@ class GameScene:
 
         self.map_tiles = get_tiles()
         self.map_layers = LAYERS
-        self.map_cells = get_map()
+        self.map_matrix = get_map()
         self.current_player_pos = (6, 7)
 
-        self.map = pygame.Surface(self.game_canvas.get_size())
+        self.map_surface = pygame.Surface(self.game_canvas.get_size())
 
         self.is_player_moving = False
         self.last_player_moving_direction = None
@@ -42,13 +42,13 @@ class GameScene:
         self.clock = time.Clock()
 
     def draw_map(self):
-        self.map.blit(self.game_canvas, scale_pair((0, 0)))
-        for i, line in enumerate(self.map_cells):
+        self.map_surface.blit(self.game_canvas, scale_pair((0, 0)))
+        for i, line in enumerate(self.map_matrix):
             for j, cell in enumerate(line):
                 pos = scale_pair((j * 48, i * 48))
                 for code in cell:
                     layer = self.map_layers[code]
-                    self.map.blit(self.map_tiles[layer['tile']], pos)
+                    self.map_surface.blit(self.map_tiles[layer['tile']], pos)
 
     def move_player(self, direction=None):
         if direction == None:
@@ -60,7 +60,7 @@ class GameScene:
         row, column = self.current_player_pos
         next_row, next_column = row, column
 
-        code = self.map_cells[row][column].pop()
+        code = self.map_matrix[row][column].pop()
         next_code = code
 
         # calculates the next position and next tile, based
@@ -70,7 +70,7 @@ class GameScene:
                 next_row -= 1
             next_code = resolve_next_code(code, 41, 42, 43)
         elif direction == 'right':
-            if column < len(self.map_cells[0]) - 1:
+            if column < len(self.map_matrix[0]) - 1:
                 next_column += 1
             next_code = resolve_next_code(code, 31, 32, 33)
         elif direction == 'left':
@@ -78,7 +78,7 @@ class GameScene:
                 next_column -= 1
             next_code = resolve_next_code(code, 21, 22, 23)
         elif direction == 'down':
-            if row < len(self.map_cells) - 1:
+            if row < len(self.map_matrix) - 1:
                 next_row += 1
             next_code = resolve_next_code(code, 11, 12, 13)
 
@@ -87,10 +87,10 @@ class GameScene:
         if self.can_player_move(next_pos):
             # moves the player to the next position, and updates the tile
             self.current_player_pos = next_pos
-            self.map_cells[next_row][next_column].append(next_code)
+            self.map_matrix[next_row][next_column].append(next_code)
         else:
             # keeps the player at the same position, updates only the tile
-            self.map_cells[row][column].append(next_code)
+            self.map_matrix[row][column].append(next_code)
 
     def stop_player(self):
         self.is_player_moving = False
@@ -98,7 +98,7 @@ class GameScene:
 
     def can_player_move(self, next_pos):
         next_row, next_column = next_pos
-        next_cell = self.map_cells[next_row][next_column]
+        next_cell = self.map_matrix[next_row][next_column]
         for code in next_cell:
             if self.map_layers[code]['type'] == 'block':
                 return False
@@ -116,6 +116,36 @@ class GameScene:
             return True
         else:
             return False
+
+    def handle_food(self):
+        line, column = self.current_player_pos
+        cell = self.map_matrix[line][column]
+        food_code = None
+        for code in cell:
+            if self.map_layers[code]['type'] == 'food':
+                food_code = code
+                break
+        if food_code is None:
+            return
+        cell.remove(code)
+        self.satiety_gauge.increase(2)
+        # TODO: play sound
+        
+
+    def handle_toilet(self):
+        pass
+
+    def handle_shower(self):
+        pass
+    
+    def handle_sink(self):
+        pass
+
+    def handle_interaction(self):
+        self.handle_food()
+        self.handle_toilet()
+        self.handle_shower()
+        self.handle_sink()
 
     def render(self, **args):
         for event in args['events']:
@@ -136,6 +166,8 @@ class GameScene:
                     time.set_timer(self.walk_event_id, 400)
                     self.move_player('left')
                     self.toilet_gauge.decrease()
+                elif event.key == pygame.K_SPACE:
+                    self.handle_interaction()
             elif event.type == pygame.KEYUP:
                 if event.key in (pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT):
                     self.stop_player()
@@ -146,7 +178,7 @@ class GameScene:
 
         self.win.blit(self.background, scale_pair((0, 0)))
         self.win.blit(self.marble, scale_pair((110, 24)))
-        self.win.blit(self.map, scale_pair((129, 40)))
+        self.win.blit(self.map_surface, scale_pair((129, 40)))
 
         for component in self.components:
             component.draw()
@@ -209,9 +241,12 @@ class Gauge:
         else:
             return self.fillings[int(self.current_value - 1)]
 
-    def increase(self):
+    def increase(self, value=0.5):
         if self.current_value < Gauge.MAX_VALUE:
-            self.current_value += 0.5
+            if self.current_value + value > Gauge.MAX_VALUE:
+                self.current_value = Gauge.MAX_VALUE
+            else:
+                self.current_value += value
 
     def decrease(self):
         if self.current_value > Gauge.MIN_VALUE:
