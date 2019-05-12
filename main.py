@@ -1,7 +1,7 @@
 import sys
 import pygame
 import config
-from scenes.names import START_SCENE, GAME_SCENE, HOW_TO_PLAY_SCENE, CREDITS_SCENE
+from scenes.names import START_SCENE, GAME_SCENE, GAME_OVER_SCENE, HOW_TO_PLAY_SCENE, CREDITS_SCENE
 from scenes.start import StartScene
 from scenes.game import GameScene
 from scenes.howtoplay import HowToPlayScene
@@ -19,22 +19,20 @@ def main():
     pygame.display.set_caption("What comes in, goes out!")
     clock = pygame.time.Clock()
 
-    # scenes instances
-    start_scene = StartScene(win)
-    game_scene = GameScene(win)
-    how_to_play_scene = HowToPlayScene(win)
-    credits_scene = CreditsScene(win)
-
     # scenes dictionary, to ease the access
     router = {
-        START_SCENE: start_scene,
-        GAME_SCENE: game_scene,
-        HOW_TO_PLAY_SCENE: how_to_play_scene,
-        CREDITS_SCENE: credits_scene
+        START_SCENE: StartScene(win),
+        GAME_SCENE: None,
+        GAME_OVER_SCENE: StartScene(win),  # TODO: point to the GAME_OVER_SCENE
+        HOW_TO_PLAY_SCENE: HowToPlayScene(win),
+        CREDITS_SCENE: CreditsScene(win)
     }
 
     # current scene being rendered
     current_scene = router[config.get(config.STARTING_SCENE) or START_SCENE]
+
+    prev_command = None
+    command = None
 
     while 1:
         events = pygame.event.get()
@@ -42,8 +40,17 @@ def main():
             if event.type == pygame.QUIT:
                 sys.exit()
 
+        prev_command = command
+
         # renders a scene and receives a command from it
         command = current_scene.render(events=events)
+
+        # when the previous command is not the game scene, it means we're starting a new game scene
+        starting_at_game_scene = prev_command is None and command['goto'] == GAME_SCENE
+        moving_to_game_scene = prev_command is not None and prev_command['goto'] != GAME_SCENE and command['goto'] == GAME_SCENE
+        if starting_at_game_scene or moving_to_game_scene:
+            router[GAME_SCENE] = GameScene(win)
+
         # the command contains a goto action indicating the next scene to be rendered
         current_scene = router[command['goto']]
 

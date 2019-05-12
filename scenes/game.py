@@ -1,8 +1,9 @@
 import pygame
+from pygame import time
 import assets.images as images
 from helpers import scale_pair, load_image
-from scenes.names import GAME_SCENE
-from .gamemap import MAP, LAYERS, get_tiles
+from scenes.names import GAME_SCENE, GAME_OVER_SCENE
+from .gamemap import get_map, LAYERS, get_tiles
 
 
 class GameScene:
@@ -27,13 +28,17 @@ class GameScene:
 
         self.map_tiles = get_tiles()
         self.map_layers = LAYERS
-        self.map_cells = MAP
+        self.map_cells = get_map()
         self.current_player_pos = (6, 7)
 
         self.map = pygame.Surface(self.game_canvas.get_size())
 
         self.is_player_moving = False
         self.last_player_moving_direction = None
+
+        self.time_event_id = pygame.USEREVENT+1
+        time.set_timer(self.time_event_id, 2000)
+        self.clock = time.Clock()
 
     def draw_map(self):
         self.map.blit(self.game_canvas, scale_pair((0, 0)))
@@ -102,6 +107,19 @@ class GameScene:
                 return False
         return True
 
+    def handle_gauges(self):
+        self.satiety_gauge.decrease()
+        self.hygiene_gauge.decrease()
+        self.toilet_gauge.increase()
+
+    def is_game_over(self):
+        if self.satiety_gauge.current_value == Gauge.MIN_VALUE or self.hygiene_gauge.current_value == Gauge.MIN_VALUE:
+            return True
+        elif self.toilet_gauge.current_value == Gauge.MAX_VALUE:
+            return True
+        else:
+            return False
+
     def render(self, **args):
         for event in args['events']:
             if event.type == pygame.KEYDOWN:
@@ -120,6 +138,8 @@ class GameScene:
             elif event.type == pygame.KEYUP:
                 if event.key in (pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT):
                     self.stop_player()
+            elif event.type == self.time_event_id:
+                self.handle_gauges()
 
         self.win.blit(self.background, scale_pair((0, 0)))
         self.win.blit(self.marble, scale_pair((110, 24)))
@@ -129,6 +149,9 @@ class GameScene:
             component.draw()
 
         self.draw_map()
+
+        if self.is_game_over():
+            return {'goto': GAME_OVER_SCENE, 'args': [self.clock.tick()]}
 
         return {'goto': GAME_SCENE}
 
@@ -178,7 +201,7 @@ class Gauge:
         self.win.blit(self.base, self.pos)
 
     def get_filling(self):
-        if self.current_value == 0:
+        if self.current_value == 0.0:
             return self.empty
         else:
             return self.fillings[int(self.current_value - 1)]
@@ -192,8 +215,8 @@ class Gauge:
             self.current_value -= 0.5
 
 
-Gauge.MAX_VALUE = 5
-Gauge.MIN_VALUE = 0
+Gauge.MAX_VALUE = 5.0
+Gauge.MIN_VALUE = 0.0
 Gauge.TYPE_HIGH_IS_GOOD = 1
 Gauge.TYPE_LOW_IS_GOOD = 2
 
