@@ -129,17 +129,28 @@ class GameScene:
             return
         cell.remove(code)
         self.satiety_gauge.increase(2)
+        self.toilet_gauge.increase(1)
         # TODO: play sound
-        
-
-    def handle_toilet(self):
-        pass
 
     def handle_shower(self):
         pass
-    
+
     def handle_sink(self):
         pass
+    
+    def handle_toilet(self):
+        line, column = self.current_player_pos
+        cell = self.map_matrix[line][column]
+        found_toilet = False
+        for code in cell:
+            if self.map_layers[code]['type'] == 'toilet':
+                found_toilet = True
+                break
+        if not found_toilet:
+            return
+        self.toilet_gauge.decrease(Gauge.MAX_VALUE)
+        self.hygiene_gauge.decrease()
+        # TODO: play sound
 
     def handle_interaction(self):
         self.handle_food()
@@ -153,19 +164,15 @@ class GameScene:
                 if event.key == pygame.K_UP:
                     time.set_timer(self.walk_event_id, 400)
                     self.move_player('up')
-                    self.satiety_gauge.increase()
                 elif event.key == pygame.K_RIGHT:
                     time.set_timer(self.walk_event_id, 400)
                     self.move_player('right')
-                    self.toilet_gauge.increase()
                 elif event.key == pygame.K_DOWN:
                     time.set_timer(self.walk_event_id, 400)
                     self.move_player('down')
-                    self.satiety_gauge.decrease()
                 elif event.key == pygame.K_LEFT:
                     time.set_timer(self.walk_event_id, 400)
                     self.move_player('left')
-                    self.toilet_gauge.decrease()
                 elif event.key == pygame.K_SPACE:
                     self.handle_interaction()
             elif event.type == pygame.KEYUP:
@@ -248,9 +255,12 @@ class Gauge:
             else:
                 self.current_value += value
 
-    def decrease(self):
+    def decrease(self, value=0.5):
         if self.current_value > Gauge.MIN_VALUE:
-            self.current_value -= 0.5
+            if self.current_value - value < Gauge.MIN_VALUE:
+                self.current_value = Gauge.MIN_VALUE
+            else:
+                self.current_value -= value
 
 
 Gauge.MAX_VALUE = 5.0
