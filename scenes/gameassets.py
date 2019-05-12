@@ -87,6 +87,13 @@ LAYERS = {
     68: {'type': 'block', 'tile': 'shelf_bread_part2'},
     69: {'type': 'block', 'tile': 'shelf_items_part1'},
     70: {'type': 'block', 'tile': 'shelf_items_part2'},
+    71: {'type': 'food', 'tile': 'food_cake'},
+    72: {'type': 'food', 'tile': 'food_cake2'},
+    73: {'type': 'food', 'tile': 'food_fish'},
+    74: {'type': 'food', 'tile': 'food_fruits'},
+    75: {'type': 'food', 'tile': 'food_pie'},
+    76: {'type': 'food', 'tile': 'food_pig'},
+    77: {'type': 'food', 'tile': 'food_pizza'},
 }
 
 def get_tiles():
@@ -161,4 +168,11 @@ def get_tiles():
         'shelf_bread_part2': load_image(images.TILE_SHELF_BREAD_PART2),
         'shelf_items_part1': load_image(images.TILE_SHELF_ITEMS_PART1),
         'shelf_items_part2': load_image(images.TILE_SHELF_ITEMS_PART2),
+        'food_cake': load_image(images.TILE_FOOD_CAKE),
+        'food_cake2': load_image(images.TILE_FOOD_CAKE2),
+        'food_fish': load_image(images.TILE_FOOD_FISH),
+        'food_fruits': load_image(images.TILE_FOOD_FRUITS),
+        'food_pie': load_image(images.TILE_FOOD_PIE),
+        'food_pig': load_image(images.TILE_FOOD_PIG),
+        'food_pizza': load_image(images.TILE_FOOD_PIZZA),
     }

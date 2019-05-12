@@ -3,7 +3,7 @@ from pygame import time
 import assets.images as images
 from helpers import scale_pair, load_image
 from scenes.names import GAME_SCENE, GAME_OVER_SCENE
-from .gamemap import get_map, LAYERS, get_tiles
+from .gameassets import get_map, LAYERS, get_tiles
 
 
 class GameScene:
@@ -37,6 +37,7 @@ class GameScene:
         self.last_player_moving_direction = None
 
         self.time_event_id = pygame.USEREVENT+1
+        self.walk_event_id = pygame.USEREVENT+2
         time.set_timer(self.time_event_id, 2000)
         self.clock = time.Clock()
 
@@ -49,11 +50,7 @@ class GameScene:
                     layer = self.map_layers[code]
                     self.map.blit(self.map_tiles[layer['tile']], pos)
 
-    def move_player(self, direction):
-        # in order to keep the player moving we need to keep track of
-        # the last direction he chose. so that in the next call to render
-        # even if there are no keydown events, we can still decide
-        # on a direction for the user
+    def move_player(self, direction=None):
         if direction == None:
             direction = self.last_player_moving_direction
         else:
@@ -124,15 +121,19 @@ class GameScene:
         for event in args['events']:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
+                    time.set_timer(self.walk_event_id, 400)
                     self.move_player('up')
                     self.satiety_gauge.increase()
                 elif event.key == pygame.K_RIGHT:
+                    time.set_timer(self.walk_event_id, 400)
                     self.move_player('right')
                     self.toilet_gauge.increase()
                 elif event.key == pygame.K_DOWN:
+                    time.set_timer(self.walk_event_id, 400)
                     self.move_player('down')
                     self.satiety_gauge.decrease()
                 elif event.key == pygame.K_LEFT:
+                    time.set_timer(self.walk_event_id, 400)
                     self.move_player('left')
                     self.toilet_gauge.decrease()
             elif event.type == pygame.KEYUP:
@@ -140,6 +141,8 @@ class GameScene:
                     self.stop_player()
             elif event.type == self.time_event_id:
                 self.handle_gauges()
+            elif event.type == self.walk_event_id:
+                self.move_player()
 
         self.win.blit(self.background, scale_pair((0, 0)))
         self.win.blit(self.marble, scale_pair((110, 24)))
