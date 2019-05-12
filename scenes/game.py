@@ -146,7 +146,17 @@ class GameScene:
         # TODO: play sound
 
     def handle_sink(self):
-        pass
+        line, column = self.current_player_pos
+        cell = self.map_matrix[line][column]
+        found_sink = False
+        for code in cell:
+            if self.map_layers[code]['type'] == 'sink':
+                found_sink = True
+                break
+        if not found_sink:
+            return
+        self.hygiene_gauge.increase(2)
+        # TODO: play sound
     
     def handle_toilet(self):
         line, column = self.current_player_pos
