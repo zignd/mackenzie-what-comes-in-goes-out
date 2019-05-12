@@ -41,10 +41,6 @@ def main():
         for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
-            # TODO: remove
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                print("debug: current mouse cursor position",
-                      pygame.mouse.get_pos())
 
         # renders a scene and receives a command from it
         command = current_scene.render(events=events)
