@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="233px" height="152px" viewBox="0 0 233 152" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="382px" height="108px" viewBox="0 0 382 108" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
     <title>Artboard</title>
     <desc>Created with Sketch.</desc>
     <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="0.5" y="81.5" width="70" height="70" rx="5"></rect>
-        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="81.5" y="81.5" width="70" height="70" rx="5"></rect>
-        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="162.5" y="81.5" width="70" height="70" rx="5"></rect>
-        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="81.5" y="0.5" width="70" height="70" rx="5"></rect>
-        <path id="Line" d="M117,22 L117,61 L116,61 L116,22 L112,22 L116.5,13 L121,22 L117,22 Z" fill="#979797" fill-rule="nonzero"></path>
-        <path id="Line-2" d="M21,116 L59,116 L59,117 L21,117 L21,121 L12,116.5 L21,112 L21,116 Z" fill="#979797" fill-rule="nonzero"></path>
-        <path id="Line-3" d="M116,127 L116,98 L117,98 L117,127 L121,127 L116.5,136 L112,127 L116,127 Z" fill="#979797" fill-rule="nonzero"></path>
-        <path id="Line-4" d="M211,117.5 L171,117.5 L171,116.5 L211,116.5 L211,112.5 L220,117 L211,121.5 L211,117.5 Z" fill="#979797" fill-rule="nonzero"></path>
+        <g id="g1171-3" fill-rule="nonzero">
+            <rect id="rect1152-7" fill="#D4AA00" x="4.8048235" y="4.40595327" width="376.742187" height="102.889823"></rect>
+            <rect id="rect1152-6-8" fill="#FFDD55" x="0.721862159" y="0.343638327" width="376.742187" height="102.889823"></rect>
+        </g>
+        <g id="arrowkeys" transform="translate(231.000000, 10.000000)" fill-rule="nonzero">
+            <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="0.5" y="44" width="38" height="38" rx="5"></rect>
+            <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="44.5" y="44" width="38" height="38" rx="5"></rect>
+            <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="87.5" y="44" width="38" height="38" rx="5"></rect>
+            <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="44.5" y="0" width="38" height="38" rx="5"></rect>
+            <polygon id="Line" fill="#979797" points="63.2777778 11.875 63.2777778 33 62.7222222 33 62.7222222 11.875 60.5 11.875 63 7 65.5 11.875"></polygon>
+            <polygon id="Line-2" fill="#979797" points="12.287234 62.2222222 32.5 62.2222222 32.5 62.7777778 12.287234 62.7777778 12.287234 65 7.5 62.5 12.287234 60"></polygon>
+            <polygon id="Line-3" fill="#979797" points="62.7222222 68.0263158 62.7222222 52 63.2777778 52 63.2777778 68.0263158 65.5 68.0263158 63 73 60.5 68.0263158"></polygon>
+            <polygon id="Line-4" fill="#979797" points="114.72449 62.7777778 93.5 62.7777778 93.5 62.2222222 114.72449 62.2222222 114.72449 60 119.5 62.5 114.72449 65"></polygon>
+        </g>
+        <text id="Movimento" font-family="ComicSansMS, Comic Sans MS" font-size="24" font-weight="normal" fill="#000000">
+            <tspan x="38" y="64">Movimento</tspan>
+        </text>
     </g>
 </svg>

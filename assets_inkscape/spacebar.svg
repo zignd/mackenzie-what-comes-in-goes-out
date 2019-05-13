@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="325px" height="70px" viewBox="0 0 325 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="382px" height="108px" viewBox="0 0 382 108" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
     <title>Artboard</title>
     <desc>Created with Sketch.</desc>
     <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="0.5" y="0.5" width="324" height="69" rx="5"></rect>
-        <text id="ESPAÇO" font-family="Helvetica" font-size="27" font-weight="normal" fill="#000000">
-            <tspan x="107" y="45">ESPAÇO</tspan>
+        <g id="g1171-3" fill-rule="nonzero">
+            <rect id="rect1152-7" fill="#D4AA00" x="4.8048235" y="4.40595327" width="376.742187" height="102.889823"></rect>
+            <rect id="rect1152-6-8" fill="#FFDD55" x="0.721862159" y="0.343638327" width="376.742187" height="102.889823"></rect>
+        </g>
+        <g id="spacebar" transform="translate(188.000000, 36.000000)">
+            <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" fill-rule="nonzero" x="0" y="0" width="176" height="37" rx="5"></rect>
+            <text id="ESPAÇO" fill="#000000" font-family="Helvetica" font-size="13" font-weight="normal">
+                <tspan x="58" y="24">ESPAÇO</tspan>
+            </text>
+        </g>
+        <text id="Interação" font-family="ComicSansMS, Comic Sans MS" font-size="24" font-weight="normal" fill="#000000">
+            <tspan x="26" y="62">Interação</tspan>
         </text>
     </g>
 </svg>
