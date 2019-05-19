@@ -121,3 +121,5 @@ ARROW_RIGHT = _path('arrow_right.png')
 
 CREDITS = _path('credits.png')
 ENDING = _path('ending.png')
+
+TOILET_ICON = _path('toilet_icon.png')

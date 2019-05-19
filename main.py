@@ -1,6 +1,8 @@
 import sys
 import pygame
 import config
+import assets.images as images
+from helpers import load_image
 from scenes.names import START_SCENE, GAME_SCENE, GAME_OVER_SCENE, HOW_TO_PLAY_SCENE, CREDITS_SCENE
 from scenes.start import StartScene
 from scenes.game import GameScene
@@ -16,7 +18,8 @@ def main():
     # setting up the game window
     resolution = config.get_resolution()
     win = pygame.display.set_mode(resolution)
-    pygame.display.set_caption("What comes in, goes out!")
+    pygame.display.set_caption("Tudo que entra, também sai")
+    pygame.display.set_icon(load_image(images.TOILET_ICON))
     clock = pygame.time.Clock()
 
     # scenes dictionary, to ease the access
@@ -39,6 +42,8 @@ def main():
         for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif config.is_debug() and event.type == pygame.MOUSEBUTTONDOWN:
+                print(pygame.mouse.get_pos())
 
         prev_command = command
 

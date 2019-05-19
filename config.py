@@ -4,6 +4,7 @@ import string
 RESOLUTION_WIDTH = "resolution-width"
 RESOLUTION_HEIGHT = "resolution-height"
 STARTING_SCENE = "starting-scene"
+DEBUG = "debug"
 
 cfg = None
 
@@ -33,3 +34,7 @@ def get_scale():
         return 1
     elif res == (800, 600):
         return 0.78125
+
+def is_debug():
+    val = get(DEBUG)
+    return val and val == True
