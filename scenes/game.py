@@ -101,7 +101,6 @@ class GameScene:
         else:
             # keeps the player at the same position, updates only the tile
             self.map_matrix[row][column].append(next_code)
-        
 
     def stop_player(self):
         self.is_player_moving = False
@@ -171,7 +170,7 @@ class GameScene:
             return
         self.hygiene_gauge.increase(2)
         play(sounds.SINK)
-    
+
     def handle_toilet(self):
         line, column = self.current_player_pos
         cell = self.map_matrix[line][column]
@@ -192,7 +191,7 @@ class GameScene:
         self.handle_shower()
         self.handle_sink()
 
-    def spawn_food(self, k = None):
+    def spawn_food(self, k=None):
         possible = []
         for i, line in enumerate(self.map_matrix):
             for j, cell in enumerate(line):
@@ -210,7 +209,7 @@ class GameScene:
             self.spawned_food.append(possible[i])
             line, column = possible[i]
             self.map_matrix[line][column].append(self.get_random_food())
-        
+
     def get_random_food(self):
         return random.choice([71, 72, 73, 74, 75, 76, 77])
 
@@ -251,9 +250,15 @@ class GameScene:
         self.draw_map()
 
         if self.is_game_over():
-            return {'goto': GAME_OVER_SCENE, 'args': [self.clock.tick(), self.count_eaten_food]}
+            return {
+                'goto': GAME_OVER_SCENE,
+                'more_args': {
+                    'clock': self.clock.tick(),
+                    'food_eaten': self.count_eaten_food
+                }
+            }
 
-        return {'goto': GAME_SCENE}
+        return {'goto': GAME_SCENE, 'more_args': args['more_args']}
 
 
 class Gauge:
@@ -337,6 +342,7 @@ def resolve_next_code(c, c1, c2, c3):
             return c1
     else:
         return c1
+
 
 def play(sound):
     pygame.mixer.music.load(sound)

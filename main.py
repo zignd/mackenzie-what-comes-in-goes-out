@@ -6,6 +6,7 @@ from helpers import load_image
 from scenes.names import START_SCENE, GAME_SCENE, GAME_OVER_SCENE, HOW_TO_PLAY_SCENE, CREDITS_SCENE
 from scenes.start import StartScene
 from scenes.game import GameScene
+from scenes.game_over import GameOverScene
 from scenes.howtoplay import HowToPlayScene
 from scenes.credits import CreditsScene
 
@@ -14,6 +15,7 @@ def main():
     # initializing pygame
     pygame.init()
     pygame.mixer.init()
+    pygame.font.init()
 
     # setting up the game window
     resolution = config.get_resolution()
@@ -26,7 +28,7 @@ def main():
     router = {
         START_SCENE: StartScene(win),
         GAME_SCENE: None,
-        GAME_OVER_SCENE: StartScene(win),  # TODO: point to the GAME_OVER_SCENE
+        GAME_OVER_SCENE: GameOverScene(win),
         HOW_TO_PLAY_SCENE: HowToPlayScene(win),
         CREDITS_SCENE: CreditsScene(win)
     }
@@ -48,7 +50,10 @@ def main():
         prev_command = command
 
         # renders a scene and receives a command from it
-        command = current_scene.render(events=events)
+        if prev_command is not None:
+            command = current_scene.render(events=events, more_args=prev_command.get('more_args'))
+        else:
+            command = current_scene.render(events=events)
 
         # when the previous command is not the game scene, it means we're starting a new game scene
         starting_at_game_scene = prev_command is None and command['goto'] == GAME_SCENE
