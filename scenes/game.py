@@ -42,6 +42,7 @@ class GameScene:
         time.set_timer(self.time_event_id, 3000)
         self.clock = time.Clock()
 
+        self.count_eaten_food = 0
         self.spawned_food = []
         self.spawn_food()
 
@@ -136,6 +137,7 @@ class GameScene:
         self.satiety_gauge.increase(2)
         self.toilet_gauge.increase(1)
         self.spawn_food(1)
+        self.count_eaten_food += 1
         # TODO: play sound
 
     def handle_shower(self):
@@ -241,7 +243,7 @@ class GameScene:
         self.draw_map()
 
         if self.is_game_over():
-            return {'goto': GAME_OVER_SCENE, 'args': [self.clock.tick()]}
+            return {'goto': GAME_OVER_SCENE, 'args': [self.clock.tick(), self.count_eaten_food]}
 
         return {'goto': GAME_SCENE}
 
