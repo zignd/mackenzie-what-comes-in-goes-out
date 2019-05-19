@@ -110,3 +110,10 @@ TILE_FOOD_FRUITS = _path('tile_food_fruits.png')
 TILE_FOOD_PIE = _path('tile_food_pie.png')
 TILE_FOOD_PIG = _path('tile_food_pig.png')
 TILE_FOOD_PIZZA = _path('tile_food_pizza.png')
+
+INTERACTEXAMPLE = _path('interactexample.png')
+MOVEMENTEXAMPLE = _path('movementexample.png')
+OBJECTEXAMPLE = _path('objectexample.png')
+
+CREDITS = _path('credits.png')
+ENDING = _path('ending.png')
