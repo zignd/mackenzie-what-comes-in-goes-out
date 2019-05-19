@@ -13,7 +13,7 @@ from scenes.credits import CreditsScene
 def main():
     # initializing pygame
     pygame.init()
-    pygame.mixer.init()  # TODO: will be used to play sounds
+    pygame.mixer.init()
 
     # setting up the game window
     resolution = config.get_resolution()

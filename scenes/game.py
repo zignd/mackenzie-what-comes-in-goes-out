@@ -2,8 +2,9 @@ import random
 import pygame
 from pygame import time
 import assets.images as images
+import assets.sounds as sounds
 from helpers import scale_pair, load_image
-from scenes.names import GAME_SCENE, GAME_OVER_SCENE
+from scenes.names import START_SCENE, GAME_SCENE, GAME_OVER_SCENE
 from .gameassets import get_map, LAYERS, get_tiles
 
 
@@ -74,18 +75,22 @@ class GameScene:
             if row > 0:
                 next_row -= 1
             next_code = resolve_next_code(code, 41, 42, 43)
+            play(sounds.STEP)
         elif direction == 'right':
             if column < len(self.map_matrix[0]) - 1:
                 next_column += 1
             next_code = resolve_next_code(code, 31, 32, 33)
+            play(sounds.STEP)
         elif direction == 'left':
             if column > 0:
                 next_column -= 1
             next_code = resolve_next_code(code, 21, 22, 23)
+            play(sounds.STEP)
         elif direction == 'down':
             if row < len(self.map_matrix) - 1:
                 next_row += 1
             next_code = resolve_next_code(code, 11, 12, 13)
+            play(sounds.STEP)
 
         # checks if the player will collide with a blocking tile by going to next position
         next_pos = (next_row, next_column)
@@ -96,6 +101,7 @@ class GameScene:
         else:
             # keeps the player at the same position, updates only the tile
             self.map_matrix[row][column].append(next_code)
+        
 
     def stop_player(self):
         self.is_player_moving = False
@@ -138,7 +144,7 @@ class GameScene:
         self.toilet_gauge.increase(1)
         self.spawn_food(1)
         self.count_eaten_food += 1
-        # TODO: play sound
+        play(sounds.EATING)
 
     def handle_shower(self):
         line, column = self.current_player_pos
@@ -151,7 +157,7 @@ class GameScene:
         if not found_shower:
             return
         self.hygiene_gauge.increase(Gauge.MAX_VALUE)
-        # TODO: play sound
+        play(sounds.SHOWERING)
 
     def handle_sink(self):
         line, column = self.current_player_pos
@@ -164,7 +170,7 @@ class GameScene:
         if not found_sink:
             return
         self.hygiene_gauge.increase(2)
-        # TODO: play sound
+        play(sounds.SINK)
     
     def handle_toilet(self):
         line, column = self.current_player_pos
@@ -178,7 +184,7 @@ class GameScene:
             return
         self.toilet_gauge.decrease(Gauge.MAX_VALUE)
         self.hygiene_gauge.decrease()
-        # TODO: play sound
+        play([sounds.PEEING, sounds.POOPING][random.choice((0, 1))])
 
     def handle_interaction(self):
         self.handle_food()
@@ -211,7 +217,9 @@ class GameScene:
     def render(self, **args):
         for event in args['events']:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_ESCAPE:
+                    return {'goto': START_SCENE}
+                elif event.key == pygame.K_UP:
                     time.set_timer(self.walk_event_id, 400)
                     self.move_player('up')
                 elif event.key == pygame.K_RIGHT:
@@ -329,3 +337,7 @@ def resolve_next_code(c, c1, c2, c3):
             return c1
     else:
         return c1
+
+def play(sound):
+    pygame.mixer.music.load(sound)
+    pygame.mixer.music.play()

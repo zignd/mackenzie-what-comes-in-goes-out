@@ -1,4 +1,5 @@
 import pygame
+import sys
 import assets.images as images
 from helpers import scale_pair, load_image
 from .names import START_SCENE, GAME_SCENE, HOW_TO_PLAY_SCENE, CREDITS_SCENE
@@ -35,6 +36,8 @@ class StartScene:
     def render(self, **args):
         for event in args['events']:
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sys.exit()
                 if event.key == pygame.K_UP and self.current_selection_index > 0:
                     self.current_selection_index -= 1
                 elif event.key == pygame.K_DOWN and self.current_selection_index < 2:
