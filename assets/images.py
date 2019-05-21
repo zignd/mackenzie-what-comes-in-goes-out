@@ -121,6 +121,9 @@ ARROW_LEFT = _path('arrow_left.png')
 ARROW_RIGHT = _path('arrow_right.png')
 
 CREDITS = _path('credits.png')
+
 ENDING = _path('ending.png')
+CHECKMARK = _path('checkmark.png')
+REPLAYARROW = _path('replayarrow.png')
 
 TOILET_ICON = _path('toilet_icon.png')
