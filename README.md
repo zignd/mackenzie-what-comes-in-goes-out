@@ -4,7 +4,7 @@ What comes in, goes out! is an educational game that aims at teaching kids the i
 
 ## Technical description
 
-The game was built on top of pygame and meant to be run on Python 3. In order to install the dependencies:
+The game was built on top of pygame and meant to be run on Python 3. In order to install the dependencies and run it:
 
 ```
 $ pip install -r requirements.txt
@@ -18,3 +18,10 @@ Currently the game supports two resolution modes:
 - 800x600
 
 You can switch between them in the config.json file.
+
+## Screenshots
+
+![](assets/images/movement_example.png)
+![](assets/images/interact_example.png)
+![](assets/images/object_example.png)
+![](assets/images/gaugeexample.png)
