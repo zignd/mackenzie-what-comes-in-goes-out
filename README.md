@@ -1,6 +1,6 @@
 # mackenzie-what-comes-in-goes-out
 
-What comes in, goes out! is an educational game that aims at teaching kids the importance of properly going to the bathroom for themselves and basic hygiene. The game is a project for the "Algoritmos e Programação II" class at the Mackenzie Presbyterian University.
+What comes in, goes out! is an educational game that aims at teaching kids the importance of properly going to the bathroom by themselves and basic hygiene. The game is a project for the "Algoritmos e Programação II" class at the Mackenzie Presbyterian University.
 
 ## Technical description
 
